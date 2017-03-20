@@ -55,12 +55,32 @@ def detect_class(classes):
     return inner_detect
 
 
+def detect_public_fields(root, file):
+    public_field_pattern = re.compile(r"^\s*public[\s\w]+;\s*$")
+    if not file.endswith(".java"):
+        return
+    full_path = os.path.join(root, file)
+    with open(full_path, encoding='utf-8') as open_file:
+        for line in open_file:
+            try:
+                if public_field_pattern.search(line):
+                    print(line)
+                    return full_path
+            except ValueError:
+                pass
+
+    pass
+
+
 if __name__ == '__main__':
     if not len(sys.argv) > 1:
         print("usage：python DetectEmptyConstructor.py path1 path2...")
         print("ps: please use python version 3 or above")
-    detected_files_name = iterate_files(sys.argv[1:], detect_empty_constructor)
-    detected_class_use = iterate_files(sys.argv[1:], detect_class(detected_files_name))
-    for filesss in detected_class_use:
-        print(filesss)
+    # detected_files_name = iterate_files(sys.argv[1:], detect_empty_constructor)
+    # detected_class_use = iterate_files(sys.argv[1:], detect_class(detected_files_name))
+    detected_public_fields = iterate_files(sys.argv[1:],detect_public_fields)
+    # for filesss in detected_class_use:
+    #     print(filesss)
         # retest()
+    for detected_public_field in detected_public_fields:
+        print(detected_public_field)
