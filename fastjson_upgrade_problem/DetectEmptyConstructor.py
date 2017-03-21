@@ -56,7 +56,7 @@ def detect_class(classes):
 
 
 def detect_hashmap_entryset(root, file):
-    hasmap_entryset_pattern = re.compile(r"\s*JSONObject.toJSON\(\s*HashMap.entrySet\(\)\s*\)")
+    hasmap_entryset_pattern = re.compile(r"\s*JSONObject.toJSON\([\w\s,.]*entrySet\(\)[,\w\s]*\)")
     if not file.endswith(".java"):
         return
     full_path = os.path.join(root, file)
