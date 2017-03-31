@@ -20,6 +20,7 @@ import java.util.*;
  */
 public class DailyRollingFileAppenderWithCache extends FileAppender {
     private long sleepGap = 10;
+    private MillisCache millisCache = new MillisCache(sleepGap);
     // The code assumes that the following constants are in a increasing
     // sequence.
     static final int TOP_OF_TROUBLE=-1;
@@ -68,8 +69,13 @@ public class DailyRollingFileAppenderWithCache extends FileAppender {
     /**
      The default constructor does nothing. */
     public DailyRollingFileAppenderWithCache() {
+        initMillisCache();
     }
-
+    private void initMillisCache(){
+        Thread millisCacheThread = new Thread(millisCache);
+        millisCacheThread.setDaemon(true);
+        millisCacheThread.start();
+    }
     /**
      Instantiate a <code>DailyRollingFileAppenderWithCache</code> and open the
      file designated by <code>filename</code>. The opened filename will
@@ -80,6 +86,7 @@ public class DailyRollingFileAppenderWithCache extends FileAppender {
                                      String datePattern) throws IOException {
         super(layout, filename, true);
         this.datePattern = datePattern;
+        initMillisCache();
         activateOptions();
     }
 
@@ -341,8 +348,8 @@ class RollingCalendar extends GregorianCalendar {
 }
 class MillisCache implements Runnable{
     public static long cachedCurrentTimeMillis = System.currentTimeMillis();
-    private int sleepGap = 10;
-    public MillisCache(int sleepGap){
+    private long sleepGap = 10;
+    public MillisCache(long sleepGap){
         this.sleepGap = sleepGap;
     }
     @Override
