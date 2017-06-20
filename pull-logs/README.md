@@ -10,4 +10,4 @@ and use tail to consume those tasks.
 
 
 About the background and more description 
-see:
+see:https://my.oschina.net/liufq/blog/993968
